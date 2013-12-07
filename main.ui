@@ -65,7 +65,7 @@
          <enum>QFrame::NoFrame</enum>
         </property>
         <property name="text">
-         <string>+1.743</string>
+         <string>0.000</string>
         </property>
         <property name="scaledContents">
          <bool>false</bool>
@@ -113,10 +113,10 @@ background: rgb(76, 76, 76);</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: #00FF00;</string>
+            <string notr="true">color: #FFFFFF;</string>
            </property>
            <property name="text">
-            <string>1527.23</string>
+            <string>0.00</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -134,10 +134,10 @@ background: rgb(76, 76, 76);</string>
             </font>
            </property>
            <property name="styleSheet">
-            <string notr="true">color: rgb(170, 85, 255)</string>
+            <string notr="true">color: #FFFFFF</string>
            </property>
            <property name="text">
-            <string>2000.01</string>
+            <string>0.00</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -795,7 +795,7 @@ background: rgb(76, 76, 76);</string>
      </spacer>
     </item>
     <item>
-     <widget class="QPushButton" name="lastToggle">
+     <widget class="QPushButton" name="resetToggle">
       <property name="font">
        <font>
         <family>Trebuchet MS</family>
@@ -810,7 +810,7 @@ background: rgb(40,63, 83);
 padding: 5px;</string>
       </property>
       <property name="text">
-       <string>LAST</string>
+       <string>RESET</string>
       </property>
      </widget>
     </item>

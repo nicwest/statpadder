@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Mon Oct 07 00:59:47 2013
+# Created: Sat Dec 07 02:42:15 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -80,7 +80,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.ratingTotal.setFont(font)
-        self.ratingTotal.setStyleSheet(_fromUtf8("color: #00FF00;"))
+        self.ratingTotal.setStyleSheet(_fromUtf8("color: #FFFFFF;"))
         self.ratingTotal.setAlignment(QtCore.Qt.AlignCenter)
         self.ratingTotal.setObjectName(_fromUtf8("ratingTotal"))
         self.horizontalLayout_8.addWidget(self.ratingTotal)
@@ -91,7 +91,7 @@ class Ui_MainWindow(object):
         font.setBold(True)
         font.setWeight(75)
         self.ratingSession.setFont(font)
-        self.ratingSession.setStyleSheet(_fromUtf8("color: rgb(170, 85, 255)"))
+        self.ratingSession.setStyleSheet(_fromUtf8("color: #FFFFFF"))
         self.ratingSession.setAlignment(QtCore.Qt.AlignCenter)
         self.ratingSession.setObjectName(_fromUtf8("ratingSession"))
         self.horizontalLayout_8.addWidget(self.ratingSession)
@@ -346,18 +346,18 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.addWidget(self.groupBox_3)
         spacerItem19 = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem19)
-        self.lastToggle = QtGui.QPushButton(self.centralwidget)
+        self.resetToggle = QtGui.QPushButton(self.centralwidget)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Trebuchet MS"))
         font.setPointSize(18)
         font.setBold(True)
         font.setWeight(75)
-        self.lastToggle.setFont(font)
-        self.lastToggle.setStyleSheet(_fromUtf8("border: #FFF;\n"
+        self.resetToggle.setFont(font)
+        self.resetToggle.setStyleSheet(_fromUtf8("border: #FFF;\n"
 "background: rgb(40,63, 83);\n"
 "padding: 5px;"))
-        self.lastToggle.setObjectName(_fromUtf8("lastToggle"))
-        self.verticalLayout_2.addWidget(self.lastToggle)
+        self.resetToggle.setObjectName(_fromUtf8("resetToggle"))
+        self.verticalLayout_2.addWidget(self.resetToggle)
         MainWindow.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(MainWindow)
@@ -365,9 +365,9 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
-        self.change.setText(_translate("MainWindow", "+1.743", None))
-        self.ratingTotal.setText(_translate("MainWindow", "1527.23", None))
-        self.ratingSession.setText(_translate("MainWindow", "2000.01", None))
+        self.change.setText(_translate("MainWindow", "0.000", None))
+        self.ratingTotal.setText(_translate("MainWindow", "0.00", None))
+        self.ratingSession.setText(_translate("MainWindow", "0.00", None))
         self.fragsAvg.setText(_translate("MainWindow", "0.00", None))
         self.fragsChange.setText(_translate("MainWindow", "1.34", None))
         self.dmgAvg.setText(_translate("MainWindow", "0.00", None))
@@ -382,5 +382,5 @@ class Ui_MainWindow(object):
         self.wrChange.setText(_translate("MainWindow", "1.34", None))
         self.tierSession.setText(_translate("MainWindow", "0.00", None))
         self.tierChange.setText(_translate("MainWindow", "1.34", None))
-        self.lastToggle.setText(_translate("MainWindow", "LAST", None))
+        self.resetToggle.setText(_translate("MainWindow", "RESET", None))
 
