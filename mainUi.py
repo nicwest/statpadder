@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main.ui'
 #
-# Created: Sat Dec 07 02:42:15 2013
+# Created: Sat Dec 07 20:00:08 2013
 #      by: PyQt4 UI code generator 4.10.3
 #
 # WARNING! All changes made in this file will be lost!
@@ -34,6 +34,9 @@ class Ui_MainWindow(object):
         MainWindow.setSizePolicy(sizePolicy)
         MainWindow.setMinimumSize(QtCore.QSize(520, 290))
         MainWindow.setMaximumSize(QtCore.QSize(520, 290))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("data/samthefox.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(_fromUtf8("background: rgb(52, 52, 52)"))
         self.centralwidget = QtGui.QWidget(MainWindow)
         sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Preferred, QtGui.QSizePolicy.Preferred)
@@ -48,7 +51,14 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.verticalLayout = QtGui.QVBoxLayout()
         self.verticalLayout.setObjectName(_fromUtf8("verticalLayout"))
+        self.horizontalLayout_11 = QtGui.QHBoxLayout()
+        self.horizontalLayout_11.setObjectName(_fromUtf8("horizontalLayout_11"))
         self.change = QtGui.QLabel(self.centralwidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.change.sizePolicy().hasHeightForWidth())
+        self.change.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily(_fromUtf8("Trebuchet MS"))
         font.setPointSize(28)
@@ -60,7 +70,23 @@ class Ui_MainWindow(object):
         self.change.setScaledContents(False)
         self.change.setAlignment(QtCore.Qt.AlignCenter)
         self.change.setObjectName(_fromUtf8("change"))
-        self.verticalLayout.addWidget(self.change)
+        self.horizontalLayout_11.addWidget(self.change)
+        self.settingsButton = QtGui.QPushButton(self.centralwidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Expanding)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.settingsButton.sizePolicy().hasHeightForWidth())
+        self.settingsButton.setSizePolicy(sizePolicy)
+        self.settingsButton.setAutoFillBackground(False)
+        self.settingsButton.setStyleSheet(_fromUtf8("background: rgb(76, 76, 76);"))
+        self.settingsButton.setText(_fromUtf8(""))
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(_fromUtf8("data/settings.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.settingsButton.setIcon(icon1)
+        self.settingsButton.setFlat(True)
+        self.settingsButton.setObjectName(_fromUtf8("settingsButton"))
+        self.horizontalLayout_11.addWidget(self.settingsButton)
+        self.verticalLayout.addLayout(self.horizontalLayout_11)
         self.verticalLayout_2.addLayout(self.verticalLayout)
         spacerItem = QtGui.QSpacerItem(0, 0, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
         self.verticalLayout_2.addItem(spacerItem)
@@ -364,7 +390,7 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Statpadder", None))
         self.change.setText(_translate("MainWindow", "0.000", None))
         self.ratingTotal.setText(_translate("MainWindow", "0.00", None))
         self.ratingSession.setText(_translate("MainWindow", "0.00", None))

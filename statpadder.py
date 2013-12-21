@@ -9,7 +9,6 @@ import sys
 from PyQt4 import QtCore, QtGui
 from mainUi import Ui_MainWindow
 
-dossier_folder = "C:\Users\Nic West\AppData\Roaming\Wargaming.net\WorldOfTanks\dossier_cache"
 
 class Main (QtGui.QMainWindow):
 
@@ -21,6 +20,8 @@ class Main (QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.resetToggle.clicked.connect(self.resetSession)
+        self.ui.settingsButton.clicked.connect(self.get_dossier_location)
+        self.dossier_folder = None
 
         self.tankdata = self.get_json_data('data/tanks.json')
         self.mapdata = self.get_json_data('data/maps.json')
@@ -42,9 +43,13 @@ class Main (QtGui.QMainWindow):
         self.results = []
         self.sessionStart = []
 
+    def get_dossier_location(self):
+        self.dossier_folder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Dossier Location', os.path.join(os.environ['APPDATA'], "Wargaming.net", "WorldOfTanks", "dossier_cache")))
+        self.mainloop()
+
     def get_latest (self):
         latest = ['',0]
-        for subdir, dirs, files in os.walk(dossier_folder, False):
+        for subdir, dirs, files in os.walk(self.dossier_folder, False):
             for name in files:
                 target = os.path.join(subdir, name)
                 mod = os.path.getmtime(target)
@@ -152,16 +157,17 @@ class Main (QtGui.QMainWindow):
 
 
     def mainloop (self):
-        dossierfile = self.get_latest()
-        if dossierfile[1] > self.last:
-            self.tanks = []
-            self.last = dossierfile[1]
-            newresults = self.process_file(dossierfile[0])
-            if not newresults == self.results:
-                if self.sessionStart == []:
-                    self.sessionStart = newresults
-                self.results = newresults
-                self.drawstats()
+        if self.dossier_folder:
+            dossierfile = self.get_latest()
+            if dossierfile[1] > self.last:
+                self.tanks = []
+                self.last = dossierfile[1]
+                newresults = self.process_file(dossierfile[0])
+                if not newresults == self.results:
+                    if self.sessionStart == []:
+                        self.sessionStart = newresults
+                    self.results = newresults
+                    self.drawstats()
                 
 
 
@@ -284,9 +290,8 @@ class Main (QtGui.QMainWindow):
 
     def get_json_data(self, filename):
         import json, time, sys, os
-        os.chdir(sys.path[0])
         if not os.path.exists(filename) or not os.path.isfile(filename) or not os.access(filename, os.R_OK):
-            catch_fatal(filename + " does not exists!")
+            print os.path.realpath(__file__)
             sys.exit(1)
         file_json = open(filename, 'r')
         try:
