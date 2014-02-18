@@ -6,6 +6,7 @@ import datetime
 import math
 import time
 import sys
+import json
 from PyQt4 import QtCore, QtGui
 from mainUi import Ui_MainWindow
 
@@ -23,28 +24,67 @@ class Main (QtGui.QMainWindow):
         self.ui.settingsButton.clicked.connect(self.get_dossier_location)
         self.dossier_folder = None
 
-        self.tankdata = self.get_json_data('data/tanks.json')
-        self.mapdata = self.get_json_data('data/maps.json')
-        stuctures = [18, 20, 22, 24, 26, 27, 28, 29, 65]
+        self.path = self.module_path()
+
+        self.tankdata = self.get_json_data(os.path.join(self.path, 'data', 'tanks.json'))
+        self.mapdata = self.get_json_data(os.path.join(self.path, 'data', 'maps.json'))
+        stuctures = [10, 17, 18, 20, 22, 24, 26, 27, 28, 29, 65, 69]
         self.structdata = dict()
         self.tanks = []
 
         for sid in stuctures:
-            structfile = os.path.join('data', 'structures_'+str(sid)+'.json')
+            structfile = os.path.join(self.path, 'data', 'structures_'+str(sid)+'.json')
             self.structdata[sid] = self.get_json_data(structfile)
 
+
+        if os.path.exists('settings.cfg'):
+            self.settings = self.get_json_data(os.path.join(self.path, 'settings.cfg'))
+            if os.path.exists(self.settings['dossier_path']):
+                self.dossier_folder = self.settings['dossier_path']
+        else:
+            dpath = os.path.join(os.environ['APPDATA'], "Wargaming.net", "WorldOfTanks", "dossier_cache")
+            if not os.path.exists(dpath):
+                dpath = None
+            self.settings = {
+                'update_interval': 10,
+                'dossier_path': dpath
+            }
         self.running=True
         
-        self.timer =  QtCore.QTimer(self)
+        self.timer = QtCore.QTimer(self)
         self.timer.timeout.connect(self.mainloop)
-        self.timer.start(10000)
+        self.timer.start(self.settings['update_interval']*1000)
 
         self.last = 0
         self.results = []
         self.sessionStart = []
 
+    def we_are_frozen(self):
+        """Returns whether we are frozen via py2exe.
+        This will affect how we find out where we are located."""
+
+        return hasattr(sys, "frozen")
+
+
+    def module_path(self):
+        """ This will get us the program's directory,
+        even if we are frozen using py2exe"""
+
+        if self.we_are_frozen():
+            return os.path.dirname(unicode(sys.executable, sys.getfilesystemencoding( )))
+
+        return os.path.dirname(unicode(__file__, sys.getfilesystemencoding( )))
+
+    def savesettings(self):
+        settings = json.dumps(self.settings)
+        fh = open(os.path.join(self.path, 'settings.cfg'), 'w')
+        fh.write(settings)
+        fh.close()
+
     def get_dossier_location(self):
-        self.dossier_folder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Dossier Location', os.path.join(os.environ['APPDATA'], "Wargaming.net", "WorldOfTanks", "dossier_cache")))
+        self.dossier_folder = str(QtGui.QFileDialog.getExistingDirectory(self, 'Dossier Location', self.settings['dossier_path']))
+        self.settings['dossier_path'] = self.dossier_folder
+        self.savesettings()
         self.mainloop()
 
     def get_latest (self):
@@ -70,9 +110,8 @@ class Main (QtGui.QMainWindow):
 
         diff = []
         norm = []
-        import random
-        for s in zip(self.results, self.sessionStart):
-            # s = (s[0]+random.uniform(10,90), s[1])
+        for i, s in enumerate(zip(self.results, self.sessionStart)):
+
             diff.append(float(s[0]-s[1]))
             if s[0]-s[1] > 0:
                 norm.append((float(s[0])/float(self.results[0]))-(float(s[1])/float(self.sessionStart[0])))
@@ -91,7 +130,7 @@ class Main (QtGui.QMainWindow):
             fragsAvg = diff[2]/diff[0]
             fragsChange = norm[2]
             dmgAvg = diff[4]/diff[0]
-            dmgChange = norm[2]
+            dmgChange = norm[4]
             spotAvg = diff[3]/diff[0]
             spotChange = norm[3]
             defAvg = diff[6]/diff[0]
@@ -111,7 +150,7 @@ class Main (QtGui.QMainWindow):
         self.ui.fragsAvg.setText('%.2f' % fragsAvg)
         self.ui.fragsChange.setText('%.3f' % fragsChange)
         self.ui.dmgAvg.setText('%.2f' % dmgAvg)
-        self.ui.dmgChange.setText('%.2f' % dmgChange)
+        self.ui.dmgChange.setText('%.4f' % dmgChange)
         self.ui.spotAvg.setText('%.2f' % spotAvg)
         self.ui.spotChange.setText('%.3f' % spotChange)
         self.ui.defAvg.setText('%.2f' % defAvg)
@@ -156,7 +195,7 @@ class Main (QtGui.QMainWindow):
 
 
 
-    def mainloop (self):
+    def mainloop(self):
         if self.dossier_folder:
             dossierfile = self.get_latest()
             if dossierfile[1] > self.last:
@@ -176,8 +215,8 @@ class Main (QtGui.QMainWindow):
     def process_file(self, filename):
         global tankdata, mapdata, structdata, tanks
         cachefile = open(filename, 'rb')
-        cacheobject = cPickle.load(cachefile)
-        dossierCache = cacheobject[1]
+        dossierversion, dossierCache = cPickle.load(cachefile)
+
 
         
         tankitems = [(k, v) for k, v in dossierCache.items()]
@@ -186,8 +225,8 @@ class Main (QtGui.QMainWindow):
         dossier = dict()
             
         dossierheader = dict()
-        dossierheader['dossierversion'] = str(cacheobject[0])
-        dossierheader['parser'] = 'http://www.vbaddict.net/wot'
+        dossierheader['dossierversion'] = str(dossierversion)
+        dossierheader['parser'] = 'statpadder'
         dossierheader['tankcount'] = len(tankitems)
 
         
@@ -205,6 +244,7 @@ class Main (QtGui.QMainWindow):
             tank['name'] = self.get_tank_data(tank['countryid'], tank['tankid'], 'title')
             tank['tier'] = self.get_tank_data(tank['countryid'], tank['tankid'], 'tier')
 
+
             if tank['version'] < 65:
 
                 for k in self.structdata[tank['version']]:
@@ -212,8 +252,10 @@ class Main (QtGui.QMainWindow):
                         tank[k['name']] = self.get_data(sourcedata, k['offset'], k['length'])
 
             if tank['version'] >= 65:
-                
-                blocks = ('a15x15', 'a15x15_2', 'clan', 'clan2', 'company', 'company2', 'a7x7', 'achievements', 'frags', 'total', 'max15x15', 'max7x7')
+                if tank['version'] == 65:
+                    blocks = ('a15x15', 'a15x15_2', 'clan', 'clan2', 'company', 'company2', 'a7x7', 'achievements', 'frags', 'total', 'max15x15', 'max7x7')
+                if tank['version'] == 69:
+                    blocks = ('a15x15', 'a15x15_2', 'clan', 'clan2', 'company', 'company2', 'a7x7', 'achievements', 'frags', 'total', 'max15x15', 'max7x7', 'playerInscriptions', 'playerEmblems', 'camouflages', 'compensation', 'achievements7x7')
                 blockcount = len(list(blocks))+1
                 newbaseoffset = (blockcount * 2)
                 header = struct.unpack_from('<' + 'H' * blockcount, data)
@@ -285,19 +327,14 @@ class Main (QtGui.QMainWindow):
                             tank[useful_key] += tank[item][useful_key]
         return tank
 
-
-
-
     def get_json_data(self, filename):
-        import json, time, sys, os
         if not os.path.exists(filename) or not os.path.isfile(filename) or not os.access(filename, os.R_OK):
-            print os.path.realpath(__file__)
+            raise NameError('CANNOT FIND FILE: '+str(filename))
             sys.exit(1)
         file_json = open(filename, 'r')
         try:
             file_data = json.load(file_json)
         except Exception, e:
-            catch_fatal(filename + " cannot be loaded as JSON: " + e.message)
             sys.exit(1)
         file_json.close()
         return file_data
@@ -320,8 +357,6 @@ class Main (QtGui.QMainWindow):
         return countryid, tankid, tankname
 
     def get_structured_data(self, sourcedata, data, rawdata, category, tankversion, baseoffset):
-
-
         returndata = dict()
 
         for structureitem in self.structdata[tankversion]:
@@ -392,7 +427,6 @@ def main():
     window = Main()
     window.showMaximized()
     window.mainloop()
-
     sys.exit(app.exec_())
 
 if __name__ == "__main__":

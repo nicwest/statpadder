@@ -35,7 +35,7 @@ class Ui_MainWindow(object):
         MainWindow.setMinimumSize(QtCore.QSize(520, 290))
         MainWindow.setMaximumSize(QtCore.QSize(520, 290))
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(_fromUtf8("data/samthefox.png")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(_fromUtf8("data/logo.ico")), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
         MainWindow.setStyleSheet(_fromUtf8("background: rgb(52, 52, 52)"))
         self.centralwidget = QtGui.QWidget(MainWindow)
